@@ -1,25 +1,53 @@
-import logo from './logo.svg';
-import './App.css';
+// App.js
+import React, { useState, useEffect } from "react";
+import ActorsList from "./components/ActorsList/ActorsList";
+import axios from "axios";
+// import ActorDetails from './ActorDetails';
 
-function App() {
+const App = () => {
+  const [actors, setActors] = useState([]);
+  const [selectedActor, setSelectedActor] = useState(null);
+  const [loading, setLoading] = useState(true);
+  const [error, setError] = useState(null);
+
+  useEffect(() => {
+    fetchActors();
+    console.log("hello");
+  }, []);
+
+  const fetchActors = async () => {
+    try {
+      const response = await axios.get("https://swapi.dev/api/people");
+
+      const data = await response.json();
+      setActors(data.results);
+      setLoading(false);
+    } catch (error) {
+      console.error("Error fetching actors:", error);
+      setError(error);
+      setLoading(false);
+    }
+  };
+
+  const handleDetailClick = (actor) => {
+    setSelectedActor(actor);
+  };
+
   return (
-    <div className="App">
-      <header className="App-header">
-        <img src={logo} className="App-logo" alt="logo" />
-        <p>
-          Edit <code>src/App.js</code> and save to reload.
-        </p>
-        <a
-          className="App-link"
-          href="https://reactjs.org"
-          target="_blank"
-          rel="noopener noreferrer"
-        >
-          Learn React
-        </a>
-      </header>
+    <div>
+      {loading ? (
+        <div>Loading...</div>
+      ) : error ? (
+        <div>Error: {error.message}</div>
+      ) : (
+        <>
+          <h1>Star Wars Actors</h1>
+          <ActorsList actors={actors} onDetailClick={handleDetailClick} />
+          {/* {selectedActor && <ActorDetails actor={selectedActor} />} */}
+        </>
+      )}
     </div>
   );
-}
+};
 
 export default App;
