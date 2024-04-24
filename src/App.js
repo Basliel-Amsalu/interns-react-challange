@@ -17,10 +17,11 @@ const App = () => {
 
   const fetchActors = async () => {
     try {
-      const response = await axios.get("https://swapi.dev/api/people");
+      const response = await axios.get("https://swapi-node.now.sh/api/people");
+      console.log(response.data.results);
 
-      const data = await response.json();
-      setActors(data.results);
+      // const data = await response.json();
+      setActors(response.data.results);
       setLoading(false);
     } catch (error) {
       console.error("Error fetching actors:", error);
