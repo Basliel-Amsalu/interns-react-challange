@@ -1,11 +1,13 @@
 import React from "react";
+import ActorCard from "../ActorCard/ActorCard";
 
 const ActorList = ({ actors, onDetailClick }) => {
   return (
     <div className='actor-list'>
-      {actors.map((actor) => (
-        <ActorList actor={actor} onDetailClick={onDetailClick} />
-      ))}
+      {actors &&
+        actors.map((actor) => (
+          <ActorCard actor={actor.fields} onDetailClick={onDetailClick} />
+        ))}
     </div>
   );
 };
