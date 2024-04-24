@@ -2,6 +2,7 @@
 import React, { useState, useEffect } from "react";
 import ActorsList from "./components/ActorsList/ActorsList";
 import axios from "axios";
+import ActorDetail from "./pages/ActorDetail";
 // import ActorDetails from './ActorDetails';
 
 const App = () => {
@@ -13,28 +14,35 @@ const App = () => {
     "https://swapi-node.now.sh/api/people/?page=1"
   );
 
+  const [modalOpen, setModalOpen] = useState(false);
+
   useEffect(() => {
+    const fetchActors = async () => {
+      try {
+        const response = await axios.get(url);
+        console.log(response.data.results);
+
+        // const data = await response.json();
+        setActors(response.data);
+        setLoading(false);
+      } catch (error) {
+        console.error("Error fetching actors:", error);
+        setError(error);
+        setLoading(false);
+      }
+    };
     fetchActors();
     console.log("hello");
   }, [url]);
 
-  const fetchActors = async () => {
-    try {
-      const response = await axios.get(url);
-      console.log(response.data.results);
-
-      // const data = await response.json();
-      setActors(response.data);
-      setLoading(false);
-    } catch (error) {
-      console.error("Error fetching actors:", error);
-      setError(error);
-      setLoading(false);
-    }
-  };
-
   const handleDetailClick = (actor) => {
     setSelectedActor(actor);
+    setModalOpen(true);
+  };
+
+  const closeDetails = () => {
+    setSelectedActor(null);
+    setModalOpen(false);
   };
 
   const nextPlanetPage = () => {
@@ -54,7 +62,7 @@ const App = () => {
       ) : error ? (
         <div>Error: {error.message}</div>
       ) : (
-        <>
+        <main>
           <h1>Star Wars Actors</h1>
           <ActorsList
             actors={actors.results}
@@ -72,8 +80,14 @@ const App = () => {
           >
             Next Page
           </button>
-          {/* {selectedActor && <ActorDetails actor={selectedActor} />} */}
-        </>
+          {selectedActor && (
+            <ActorDetail
+              actor={selectedActor}
+              closeModal={closeDetails}
+              onDetailClick={handleDetailClick}
+            />
+          )}
+        </main>
       )}
     </div>
   );
