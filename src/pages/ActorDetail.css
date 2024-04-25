@@ -11,8 +11,8 @@
 .modal-overlay {
   position: fixed;
   top: 15vh;
-  left: 5%;
-  width: 90%;
+  left: 25%;
+  width: 50%;
   background-color: white;
   padding: 1rem;
   border-radius: 14px;
@@ -29,6 +29,9 @@
 
 .modal-content {
   text-align: center;
+  display: flex;
+  justify-content: center;
+  gap: 20px;
 }
 
 .close {

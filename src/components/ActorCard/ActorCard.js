@@ -1,4 +1,5 @@
 import React from "react";
+import "./ActorCard.css";
 
 const ActorCard = ({ actor, onDetailClick }) => {
   return (

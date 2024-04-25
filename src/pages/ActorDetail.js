@@ -7,7 +7,11 @@ const ActorDetail = ({ actor, closeModal }) => {
   return (
     <>
       {ReactDOM.createPortal(
-        <div className='modal-backdrop' onClick={closeModal}></div>,
+        <div
+          data-testid='modal-backdrop'
+          className='modal-backdrop'
+          onClick={closeModal}
+        ></div>,
         portalElement
       )}
       {ReactDOM.createPortal(
@@ -17,10 +21,18 @@ const ActorDetail = ({ actor, closeModal }) => {
               <span className='close' onClick={closeModal}>
                 &times;
               </span>
-              <h2>{actor.name}</h2>
-              <p>Height: {actor.height}</p>
-              <p>Birth Year: {actor.birth_year}</p>
-              {/* Add more details here */}
+              <div>
+                <h2>{actor.name}</h2>
+                <p>Height: {actor.height}</p>
+                <p>Birth Year: {actor.birth_year}</p>
+              </div>
+              <div>
+                <p> Gender: {actor.gender}</p>
+                <p>Skin color: {actor.skin_color}</p>
+                <p>Hair color: {actor.hair_color}</p>
+                <p>Eye color: {actor.eye_color}</p>
+                <p>Mass: {actor.mass}</p>
+              </div>
             </div>
           </div>
         </div>,

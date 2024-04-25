@@ -1,12 +1,15 @@
 // App.js
 import React, { useState, useEffect } from "react";
 import ActorsList from "./components/ActorsList/ActorsList";
-import axios from "axios";
 import ActorDetail from "./pages/ActorDetail";
-// import ActorDetails from './ActorDetails';
+import "./App.css";
 
 const App = () => {
-  const [actors, setActors] = useState([]);
+  const [actors, setActors] = useState({
+    results: [],
+    next: null,
+    previous: null,
+  });
   const [selectedActor, setSelectedActor] = useState(null);
   const [loading, setLoading] = useState(true);
   const [error, setError] = useState(null);
@@ -19,11 +22,10 @@ const App = () => {
   useEffect(() => {
     const fetchActors = async () => {
       try {
-        const response = await axios.get(url);
-        console.log(response.data.results);
-
-        // const data = await response.json();
-        setActors(response.data);
+        const response = await fetch(url);
+        const data = await response.json();
+        console.log(data);
+        setActors(data);
         setLoading(false);
       } catch (error) {
         console.error("Error fetching actors:", error);
@@ -32,7 +34,6 @@ const App = () => {
       }
     };
     fetchActors();
-    console.log("hello");
   }, [url]);
 
   const handleDetailClick = (actor) => {
@@ -58,28 +59,44 @@ const App = () => {
   return (
     <div>
       {loading ? (
-        <div>Loading...</div>
-      ) : error ? (
-        <div>Error: {error.message}</div>
-      ) : (
-        <main>
-          <h1>Star Wars Actors</h1>
-          <ActorsList
-            actors={actors.results}
-            onDetailClick={handleDetailClick}
-          />
-          <button
-            onClick={previousPage}
-            disabled={actors.previous ? false : true}
-          >
+        <>
+          <div className='loading'>Loading...</div>
+          {/* <button onClick={previousPage} disabled={!actors.previous}>
             Previous Page
           </button>
-          <button
-            onClick={nextPlanetPage}
-            disabled={actors.next ? false : true}
-          >
+          <button onClick={nextPlanetPage} disabled={!actors.next}>
             Next Page
+          </button> */}
+        </>
+      ) : error ? (
+        <>
+          <div className='error'>Error: {error.message}</div>
+          {/* <button onClick={previousPage} disabled={!actors.previous}>
+            Previous Page
           </button>
+          <button onClick={nextPlanetPage} disabled={!actors.next}>
+            Next Page
+          </button> */}
+        </>
+      ) : (
+        <main>
+          <div className='title'>
+            <h1 data-testid='characters-list'>Star Wars Characters</h1>
+          </div>
+          <div className='list'>
+            <ActorsList
+              actors={actors.results}
+              onDetailClick={handleDetailClick}
+            />
+            <div className='nav-btn'>
+              {actors.previous && (
+                <button onClick={previousPage}>Previous Page</button>
+              )}
+              {actors.next && (
+                <button onClick={nextPlanetPage}>Next Page</button>
+              )}
+            </div>
+          </div>
           {selectedActor && (
             <ActorDetail
               actor={selectedActor}
