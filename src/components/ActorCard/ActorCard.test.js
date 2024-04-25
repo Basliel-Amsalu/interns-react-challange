@@ -1,6 +1,6 @@
 // ActorCard.test.js
 import React from "react";
-import { render, fireEvent } from "@testing-library/react";
+import { render, fireEvent, screen } from "@testing-library/react";
 import ActorCard from "./ActorCard";
 
 describe("ActorCard component", () => {
@@ -14,18 +14,18 @@ describe("ActorCard component", () => {
     const portalElement = document.createElement("div");
     portalElement.setAttribute("id", "modal-root");
     document.body.appendChild(portalElement);
-    const { getByText } = render(<ActorCard actor={actor} />);
-    expect(getByText(actor.name)).toBeInTheDocument();
-    expect(getByText(`Height: ${actor.height}`)).toBeInTheDocument();
-    expect(getByText(`Birth Year: ${actor.birth_year}`)).toBeInTheDocument();
+    render(<ActorCard actor={actor} />);
+    expect(screen.getByText(actor.name)).toBeInTheDocument();
+    expect(screen.getByText(`Height: ${actor.height}`)).toBeInTheDocument();
+    expect(
+      screen.getByText(`Birth Year: ${actor.birth_year}`)
+    ).toBeInTheDocument();
   });
 
   it("calls onDetailClick when Detail button is clicked", () => {
     const onDetailClick = jest.fn();
-    const { getByText } = render(
-      <ActorCard actor={actor} onDetailClick={onDetailClick} />
-    );
-    const detailButton = getByText("Detail");
+    render(<ActorCard actor={actor} onDetailClick={onDetailClick} />);
+    const detailButton = screen.getByText("Detail");
     fireEvent.click(detailButton);
     expect(onDetailClick).toHaveBeenCalledWith(actor);
   });

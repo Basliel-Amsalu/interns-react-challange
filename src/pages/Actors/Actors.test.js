@@ -1,18 +1,17 @@
-// App.test.js
+/* eslint-disable testing-library/no-wait-for-side-effects */
+/* eslint-disable testing-library/no-wait-for-multiple-assertions */
 import React from "react";
 import { render, fireEvent, waitFor, screen } from "@testing-library/react";
 import "@testing-library/jest-dom/extend-expect";
-import App from "./App";
+import Actors from "./Actors";
 
-// Mocking fetch to simulate API calls
-
-describe("App component", () => {
-  test("renders loading message initially", async () => {
-    render(<App />);
+describe("Actors component", () => {
+  it("renders loading message initially", async () => {
+    render(<Actors />);
     expect(screen.getByText("Loading...")).toBeInTheDocument();
   });
 
-  test("renders actors list after loading", async () => {
+  it("renders actors list after loading", async () => {
     global.fetch = jest.fn(() =>
       Promise.resolve({
         json: () =>
@@ -42,7 +41,7 @@ describe("App component", () => {
           }),
       })
     );
-    render(<App />);
+    render(<Actors />);
     await waitFor(() => {
       const actorList = screen.getByText(/Star Wars Characters/i);
       expect(actorList).toBeInTheDocument();
@@ -54,7 +53,7 @@ describe("App component", () => {
   });
 
   //   only testing the previous button because the test cases are not enough for next page
-  test("clicking on previous page button fetches previous page of actors", async () => {
+  it("clicking on previous page button fetches previous page of actors", async () => {
     global.fetch = jest.fn(() =>
       Promise.resolve({
         json: () =>
@@ -84,10 +83,10 @@ describe("App component", () => {
           }),
       })
     );
-    render(<App />);
+    render(<Actors />);
     await waitFor(() => {
       fireEvent.click(screen.getByText(/Previous Page/i));
       expect(fetch).toHaveBeenCalled();
-    }); // One for initial fetch, one for previous page
+    });
   });
 });

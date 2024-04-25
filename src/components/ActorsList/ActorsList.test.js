@@ -1,6 +1,6 @@
-// ActorList.test.js
+/* eslint-disable testing-library/no-node-access */
 import React from "react";
-import { render, fireEvent } from "@testing-library/react";
+import { render, fireEvent, screen } from "@testing-library/react";
 import ActorList from "./ActorsList";
 
 describe("ActorList component", () => {
@@ -10,21 +10,21 @@ describe("ActorList component", () => {
   ];
 
   it("renders actor cards correctly", () => {
-    const { getByText } = render(<ActorList actors={actors} />);
+    render(<ActorList actors={actors} />);
     actors.forEach((actor) => {
-      expect(getByText(actor.fields.name)).toBeInTheDocument();
-      expect(getByText(`Height: ${actor.fields.height}`)).toBeInTheDocument();
+      expect(screen.getByText(actor.fields.name)).toBeInTheDocument();
       expect(
-        getByText(`Birth Year: ${actor.fields.birth_year}`)
+        screen.getByText(`Height: ${actor.fields.height}`)
+      ).toBeInTheDocument();
+      expect(
+        screen.getByText(`Birth Year: ${actor.fields.birth_year}`)
       ).toBeInTheDocument();
     });
   });
 
   it("calls onDetailClick when Detail button is clicked", () => {
     const onDetailClick = jest.fn();
-    const { getByText } = render(
-      <ActorList actors={actors} onDetailClick={onDetailClick} />
-    );
+    render(<ActorList actors={actors} onDetailClick={onDetailClick} />);
     const detailButtons = document.querySelectorAll("button");
     detailButtons.forEach((button, index) => {
       fireEvent.click(button);
