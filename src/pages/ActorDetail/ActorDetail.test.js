@@ -1,5 +1,5 @@
 import React from "react";
-import { render, fireEvent, screen } from "@testing-library/react";
+import { render, fireEvent, screen, waitFor } from "@testing-library/react";
 import ReactDOM from "react-dom";
 
 import ActorDetail from "./ActorDetail";
@@ -9,6 +9,7 @@ describe("ActorDetail component", () => {
     name: "Luke Skywalker",
     height: "172",
     birth_year: "19BBY",
+    url: "/1",
   };
   let portalContainer;
 
@@ -24,15 +25,42 @@ describe("ActorDetail component", () => {
 
   it("renders actor details correctly", () => {
     const closeModal = jest.fn();
-    render(
-      <ActorDetail actor={actor} closeModal={closeModal} />,
-      { container: portalContainer }
-    );
+    render(<ActorDetail actor={actor} closeModal={closeModal} />, {
+      container: portalContainer,
+    });
     expect(screen.getByText(actor.name)).toBeInTheDocument();
     expect(screen.getByText(`Height: ${actor.height}`)).toBeInTheDocument();
     expect(
       screen.getByText(`Birth Year: ${actor.birth_year}`)
     ).toBeInTheDocument();
+  });
+
+  it("renders movies list after loading", async () => {
+    global.fetch = jest.fn(() =>
+      Promise.resolve({
+        json: () =>
+          Promise.resolve({
+            results: [
+              {
+                fields: {
+                  title: "A new Hope",
+                  characters: ["/1"],
+                },
+              },
+            ],
+            next: "null",
+            previous: "null",
+          }),
+      })
+    );
+    const closeModal = jest.fn();
+    render(<ActorDetail actor={actor} closeModal={closeModal} />, {
+      container: portalContainer,
+    });
+    await waitFor(() => {
+      const filmsList = screen.getByText(/A new Hope/i);
+      expect(filmsList).toBeInTheDocument();
+    });
   });
 
   it("calls closeModal when backdrop is clicked", () => {
@@ -54,5 +82,4 @@ describe("ActorDetail component", () => {
     fireEvent.click(closeButton);
     expect(closeModal).toHaveBeenCalled();
   });
-
 });
