@@ -1,4 +1,3 @@
-// App.js
 import React, { useState, useEffect } from "react";
 import ActorList from "../../components/ActorsList/ActorsList";
 import ActorDetail from "../ActorDetail/ActorDetail";
